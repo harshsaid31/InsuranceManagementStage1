@@ -1,5 +1,6 @@
 package com.insurance.utils;
 
+import java.sql.PreparedStatement;
 import java.util.Scanner;
 
 import com.insurance.dao.ClaimDao;
@@ -55,6 +56,27 @@ public class ChoiceManager {
 			 customer.setEmail(email);
 			 customer.setPhoneNumber(phoneNumber);
 			 customer.setAddress(address);
+		} catch (Exception e) {
+			System.out.println("Please enter correct input");
+		}
+	}
+
+	private void setClaimDetails(Scanner scanner, Claim claim) {
+		try {
+			System.out.println("Enter Policy ID: ");
+            int policyId = scanner.nextInt();
+
+            System.out.println("Enter Customer ID: ");
+            int customerId = scanner.nextInt();
+            
+			scanner.nextLine(); 
+            System.out.println("Enter Claim Date (YYYY-MM-DD): ");
+            String claimDate = scanner.nextLine();
+
+			claim.setPolicyId(policyId);
+			claim.setCustomerId(customerId);
+			claim.setClaimDate(claimDate);
+			claim.setStatus("Submitted"); // Default Submitted in DB
 		} catch (Exception e) {
 			System.out.println("Please enter correct input");
 		}
@@ -145,7 +167,7 @@ public class ChoiceManager {
         
 	}
 
-	public void manageClaims(Scanner scanner, ClaimDao claimDao) {
+	public void manageClaims(Scanner scanner, ClaimDao claimDao, PolicyDao policyDao) {
 		System.out.println("\nClaim Management");
         System.out.println("1. Submit Claim");
         System.out.println("2. View Claim");
@@ -158,6 +180,20 @@ public class ChoiceManager {
 		switch (choice) {
 			case 1: {
 				Claim claim = new Claim();
+
+				// display all policies to user
+				policyDao.viewAllPolicies();
+
+				// take claim details
+				this.setClaimDetails(scanner, claim);
+
+				// submit claim
+				claimDao.submitClaim(claim);
+				break;
+			}
+			case 2: {
+				System.out.println("Enter Claim Id: ");
+				
 			}
 			default:
 				System.out.println("Invalid choice");

@@ -20,4 +20,20 @@ public class GeneralUtilities {
 			System.out.println("Some unexpected error occured");
 		}
 	}
+
+	public static void checkCustomerExist(int customerId) {
+		try {
+			Connection connection = DatabaseConnection.getConnection();
+			String sql = "SELECT * FROM Customer WHERE customer_id = ?";
+			PreparedStatement checkStatement = connection.prepareStatement(sql);
+	        checkStatement.setInt(1, customerId);
+	        ResultSet resultSet = checkStatement.executeQuery();
+	        if (!resultSet.next()) {
+	        	System.out.println("Customer with ID " + customerId + " does not exist.");
+	        	return;
+	        }
+		} catch (Exception e) {
+			System.out.println("Some unexpected error occured");
+		}
+	}
 }

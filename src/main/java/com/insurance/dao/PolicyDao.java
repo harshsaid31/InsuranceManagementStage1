@@ -91,6 +91,35 @@ public class PolicyDao implements IPolicyDao {
 	}
 
 	@Override
+	public void viewAllPolicies() {
+		try {
+			
+			// header
+			System.out.println("-----------------------------------------------------------------------");
+			System.out.printf("%-15s %-15s %-15s %-15s %-15s\n", "Policy ID", "Policy Number", "Type", "Coverage", "Premium");
+			System.out.println("-----------------------------------------------------------------------");
+				
+			String sql = "SELECT * FROM Policy";
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				int policyId = resultSet.getInt("policy_id");
+				String policyNumber = resultSet.getString("policy_number");
+				String type = resultSet.getString("type");
+				double coverageAmount = resultSet.getDouble("coverage_amount");
+				double premiumAmount = resultSet.getDouble("premium_amount");
+
+				System.out.printf("%-15s %-15s %-15s %-15s %-15s\n", policyId, policyNumber, type, coverageAmount, premiumAmount);
+			}
+
+		} catch (Exception e) {
+			System.out.println("Some error occred while viewing all policies");
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	public void deletePolicy(int policyId) {
 		try {
 			// check if policy exists

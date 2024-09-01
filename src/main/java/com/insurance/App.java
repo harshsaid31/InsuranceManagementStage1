@@ -44,6 +44,10 @@ public class App {
 					choiceManager.manageCustomers(scanner, customerDao);
 					break;
 				}
+				case 3: {
+					choiceManager.manageClaims(scanner, claimDao, policyDao);
+					break;
+				}
 				case 4: {
 					break;
 				}
