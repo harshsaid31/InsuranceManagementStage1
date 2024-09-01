@@ -68,7 +68,29 @@ public class ClaimDao implements IClaimDao {
 
 	@Override
 	public void updateClaim(int claimId, String status) {
+		try {
 
+			// check if claim exist
+			// code here
+
+			String sql = "UPDATE Claim SET status = ? WHERE claim_id = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			
+			// check status and update accordingly
+			if (status.equals("Submitted")) {
+				preparedStatement.setString(1, status);
+			} else {
+				preparedStatement.setString(1, status);
+			}
+			preparedStatement.setInt(2, claimId);
+
+			int rowUpdated = preparedStatement.executeUpdate();
+			if (rowUpdated > 0) {
+				System.out.println("Claim Updated Successfully");
+			}
+		} catch (Exception e) {
+			System.out.println("Some error occured while updating claim");
+		}
 	}
 
 	@Override

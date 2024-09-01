@@ -193,7 +193,13 @@ public class ChoiceManager {
 			}
 			case 2: {
 				System.out.println("Enter Claim Id: ");
+				int claimId = scanner.nextInt();
+				claimDao.viewClaim(claimId);
+				break;
+			}
+			case 3: {
 				
+
 			}
 			default:
 				System.out.println("Invalid choice");
