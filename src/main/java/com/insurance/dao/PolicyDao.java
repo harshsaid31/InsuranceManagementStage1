@@ -65,7 +65,9 @@ public class PolicyDao implements IPolicyDao {
 	public void updatePolicy(int policyId, Policy policy) {
 		try {
 			// check if policy exists
-			GeneralUtilities.checkPolicyExist(policyId);
+			if (GeneralUtilities.checkPolicyExist(policyId)) {
+				return;
+			}
 	        
 	        // update policy
 			String sql = "UPDATE Policy SET policy_number = ?, type = ?, coverage_amount = ?, premium_amount = ? WHERE policy_id = ?";
@@ -123,12 +125,27 @@ public class PolicyDao implements IPolicyDao {
 	public void deletePolicy(int policyId) {
 		try {
 			// check if policy exists
-			GeneralUtilities.checkPolicyExist(policyId);
+			if (GeneralUtilities.checkPolicyExist(policyId)) {
+				return;
+			}
 			
 			// check if there are claims associated with the policy
+			if (GeneralUtilities.checkClaimAssociatedWithPolicy(policyId)) {
+				return;
+			}
+
+			// delete policy
+			String sql = "DELETE FROM Policy WHERE policy_id = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, policyId);
+			int rowsDeleted = preparedStatement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Policy deleted successfully");
+            }
+			
 		} catch (Exception e) {
 			System.out.println("Some error occured while deleting policy");
+			e.printStackTrace();
 		}
 	}
-
 }

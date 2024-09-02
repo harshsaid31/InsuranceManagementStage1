@@ -20,10 +20,14 @@ public class ClaimDao implements IClaimDao {
 	public void submitClaim(Claim claim) {
 		try {
 			// check if policy exist's
-			GeneralUtilities.checkPolicyExist(claim.getPolicyId());
+			if (GeneralUtilities.checkPolicyExist(claim.getPolicyId())) {
+				return;
+			}
 
 			// check if customer exist's
-			GeneralUtilities.checkCustomerExist(claim.getCustomerId());
+			if (GeneralUtilities.checkCustomerExist(claim.getCustomerId())) {
+				return;
+			}
 
 			// submit claim
 			String sql = "INSERT INTO Claim (policy_id, customer_id, claim_date, status) VALUES (?, ?, ?, ?)";
@@ -71,17 +75,14 @@ public class ClaimDao implements IClaimDao {
 		try {
 
 			// check if claim exist
-			// code here
+			if (GeneralUtilities.checkClaimExist(claimId)) {
+				return;
+			}
 
+			// update claim
 			String sql = "UPDATE Claim SET status = ? WHERE claim_id = ?";
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			
-			// check status and update accordingly
-			if (status.equals("Submitted")) {
-				preparedStatement.setString(1, status);
-			} else {
-				preparedStatement.setString(1, status);
-			}
+			preparedStatement.setString(1, status);
 			preparedStatement.setInt(2, claimId);
 
 			int rowUpdated = preparedStatement.executeUpdate();
@@ -95,7 +96,23 @@ public class ClaimDao implements IClaimDao {
 
 	@Override
 	public void deleteClaim(int claimId) {
-	
-	}
+		try {
+			// check if claim exist
+			if (GeneralUtilities.checkClaimExist(claimId)) {
+				return;
+			}
 
+			// delete claim
+			String sql = "DELETE FROM Claim WHERE claim_id = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, claimId);
+
+			int rowDeleted = preparedStatement.executeUpdate();
+			if (rowDeleted > 0) {
+				System.out.println("Claim Deleted Successfully");
+			}
+		} catch (Exception e) {
+			System.out.println("Some error occured while deleting claim");
+		}
+	}
 }

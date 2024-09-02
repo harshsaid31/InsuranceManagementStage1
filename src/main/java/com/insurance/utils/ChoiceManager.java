@@ -118,7 +118,9 @@ public class ChoiceManager {
 			break;
 		}
 		case 4: {
-			System.out.println("Delete policy");
+			System.out.println("Enter Policy Id: ");
+			int policyId = scanner.nextInt();
+			policyDao.deletePolicy(policyId);
 			break;
 		}
 		default:
@@ -161,10 +163,17 @@ public class ChoiceManager {
 			customerDao.updateCustomer(customerId, customer);
 			break;
 		}
+		case 4: {
+			System.out.println("Enter Customer Id: ");
+			int customerId = scanner.nextInt();
+
+			// delete customer
+			customerDao.deleteCustomer(customerId);
+			break;
+		}
 		default:
 			System.out.println("Invalid choice");
 		}
-        
 	}
 
 	public void manageClaims(Scanner scanner, ClaimDao claimDao, PolicyDao policyDao) {
@@ -198,12 +207,39 @@ public class ChoiceManager {
 				break;
 			}
 			case 3: {
-				
+				// take claim id from user
+				System.out.println("Enter Claim Id: ");
+				int claimId = scanner.nextInt();
 
+				// take input for the status of claim
+				System.out.println("\n Select Status Type: ");
+				System.out.println("1. Submitted");
+				System.out.println("2. Processed");
+				System.out.println("3. Cancel");
+				int statusChoice = scanner.nextInt();
+
+				switch (statusChoice) {
+					case 1: {
+						claimDao.updateClaim(claimId, "Submitted");
+						break;
+					}
+					case 2: {
+						claimDao.updateClaim(claimId, "Processed");
+						break;
+					}
+					default:
+						break;
+				}
+				break;
+			}
+			case 4: {
+				System.out.println("Enter Claim Id: ");
+				int claimId = scanner.nextInt();
+				claimDao.deleteClaim(claimId);
+				break;
 			}
 			default:
 				System.out.println("Invalid choice");
 		}
 	} 
-	
 }
